@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import {useEffect, useState} from "react"
+import petApi from "./utils/api"
+import "./App.css"
+import * as SwaggerPetstore from "./stub"
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [pets, setPets] = useState([])
+
+	useEffect(() => {
+		let status = [1] // [String] | Status values that need to be considered for filter
+		petApi.findPetsByStatus(status, (error, data) => {
+			if (error) {
+				console.error(error)
+			} else {
+				setPets(data.slice(0, 20))
+			}
+		})
+	}, [])
+
+	return <div className="App">{pets.length && pets.map((pet, i) => <p key={i}>{pet.name}</p>)}</div>
 }
 
-export default App;
+export default App
